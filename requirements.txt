@@ -1,0 +1,13 @@
+pandas
+swifter
+sqlalchemy
+python-dotenv
+scikit-learn
+transformers==4.32.0
+deeplake==3.6.19
+peft==0.5.0 
+wandb==0.15.8
+flask 
+huggingface_hub
+praw
+psycopg2
