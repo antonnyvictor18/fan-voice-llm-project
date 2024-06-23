@@ -1,4 +1,5 @@
 import psycopg2
+import warnings
 from datetime import datetime
 from transformers import pipeline, AutoTokenizer
 import os
@@ -7,6 +8,7 @@ import praw
 import re
 from config import config
 
+warnings.filterwarnings('ignore')
 
 def clean_comment(comment):
     # Remover URLs
@@ -21,7 +23,7 @@ def clean_comment(comment):
 
 def classify_sentiment(text, classifier):
     truncated_text = text[:510]
-    result = classifier(truncated_text)[0]
+    result = classifier(truncated_text)[0][0]
     return config["setiment_mapping"][result['label']]
 
 
@@ -98,7 +100,7 @@ def insert_comments(post_id, comments, cursor, conn, classifier):
 def main():
     load_dotenv(rf'my_venv\enviroment_variables.env')
 
-    classifier = pipeline('sentiment-analysis', model='nlptown/bert-base-multilingual-uncased-sentiment')
+    classifier = pipeline(model="lxyuan/distilbert-base-multilingual-cased-sentiments-student", top_k=None)
 
 
     reddit = praw.Reddit(client_id=os.getenv("REDDIT_CLIENT_ID"),
