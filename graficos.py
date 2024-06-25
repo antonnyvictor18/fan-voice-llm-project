@@ -56,14 +56,44 @@ def create_bar_chart(df, x_column, y_column, title='Rodada ', xlabel='Sentimento
     plt.bar(df[x_column], df[y_column], color='blue')
 
     # Titulo e labels
-    formatado = "{}, {}".format(df.iloc[0]['rodada'], df.iloc[0]['times'])
+    formatado = "{}, {}".format(rodada, time)
     title += formatado
     plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
 
-    # Add grid lines
+    # Adcionar grid
     plt.grid(axis = 'y', linestyle = '--', linewidth=0.5)
+
+    # Plotar
+    plt.show()
+
+
+def create_three_lines_chart(df, columns, title='Sentimento até Rodada ', xlabel='Rodada', ylabel='Qtd Comentários'):
+
+    plt.figure(figsize=(10, 6))
+    
+    for column in columns:
+        if column == "Positive":
+            plt.plot(df.index, df[column], label=column, marker='o', color='green')
+        elif column == "Neutral":
+            plt.plot(df.index, df[column], label=column, marker='o', color='grey')
+        else:
+            plt.plot(df.index, df[column], label=column, marker='o', color='red')
+
+
+    # Titulo e legendas
+    formatado = "{}, {}".format(rodada, time)
+    title += formatado    
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+
+    # Grid
+    plt.grid(axis = 'y', linestyle = '--', linewidth=0.5)
+
+    # Adicionar legenda
+    plt.legend()
 
     # Plotar
     plt.show()
@@ -73,7 +103,7 @@ if __name__ == "__main__":
     database = 'postgres'
     user = 'postgres'
     password = os.environ.get('DB_PASSWORD')
-    query = """select comments.comment_sentiment as Sentimento, posts.post_round as Rodada, teams.team_name as Times, count(posts.post_round) as Total
+    query1 = """select comments.comment_sentiment as Sentimento, posts.post_round as Rodada, teams.team_name as Times, count(posts.post_round) as Total
                from brasileirao2023.comments inner join
                brasileirao2023.posts
                on comments.post_id = posts.post_id inner join
@@ -82,6 +112,33 @@ if __name__ == "__main__":
                where posts.post_round = {} and teams.team_name = '{}'
                group by comments.comment_sentiment, posts.post_round, teams.team_name;""".format(rodada, time)
 
-    data = fetch_data_from_postgresql(host, database, user, password, query)
-    create_bar_chart(data, 'sentimento', 'total')
+    query2 = """
+                with temporaryTable(sentimento, rodada, times, total) as
+	                (select
+		                comments.comment_sentiment as Sentimento,
+		                posts.post_round as Rodada, 
+                        teams.team_name as Times,
+                        count(posts.post_id) as Total
+                        from brasileirao2023.comments inner join
+                        brasileirao2023.posts
+                        on comments.post_id = posts.post_id inner join
+                        brasileirao2023.teams
+                        on posts.team_id = teams.team_id
+                        where posts.post_round < {} and teams.team_name = '{}'
+                        group by comments.comment_sentiment, posts.post_round, teams.team_name)
+                    select
+                        rodada,
+                        MAX(CASE sentimento WHEN 'Positive' THEN total END) as "Positive",
+                        MAX(CASE sentimento WHEN 'Neutral' THEN total END) as "Neutral",
+                        MAX(CASE sentimento WHEN 'Negative' THEN total END) as "Negative"
+                    from temporaryTable
+                    group by rodada;""".format(rodada, time)    
+    
+    
+    
+    data1 = fetch_data_from_postgresql(host, database, user, password, query1)
+    data2 = fetch_data_from_postgresql(host, database, user, password, query2)
+    create_bar_chart(data1, 'sentimento', 'total')
+    data2.set_index('rodada', inplace=True)
+    create_three_lines_chart(data2, ['Positive', 'Neutral', 'Negative'])
     
