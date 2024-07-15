@@ -1,7 +1,6 @@
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, f1_score, accuracy_score
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 def gerar_matriz_confusão(pred_col, verdadeiro_col, csv_file):
 
@@ -20,4 +19,4 @@ def gerar_matriz_confusão(pred_col, verdadeiro_col, csv_file):
     cm_display.plot()
     plt.show()
 
-gerar_matriz_confusão('sentimento_modelo', 'sentimento_esperado', 'fan-voice-llm-project/Analise_Torcedor.csv')
+gerar_matriz_confusão('sentimento_modelo', 'sentimento_esperado', 'evaluation_data\Analise_Torcedor.csv')
