@@ -9,11 +9,8 @@ from config import config
 
 
 def clean_comment(comment):
-    # Remover URLs
     comment = re.sub(r'http\S+|www\S+|https\S+', '', comment, flags=re.MULTILINE)
-    # Remover hashtags
     comment = re.sub(r'#\w+', '', comment)
-    #remover tabs e quebras de linha
     comment = re.sub(r'\n', '', comment)
     comment = re.sub(r'\t', '', comment)
     return comment
@@ -83,7 +80,7 @@ def insert_comments(post_id, comments, cursor, conn, classifier):
         comment_date = datetime.fromtimestamp(comment.created_utc)
         comment_content = clean_comment(comment.body)
         comment_sentiment = classify_sentiment(comment_content, classifier)
-        # get the reddit comment upvote score
+        
         comment_score = comment.score
         reddit_comment_id = comment.id
         cursor.execute("SELECT comment_id FROM brasileirao2023.comments WHERE reddit_comment_id = %s", (reddit_comment_id,))
@@ -111,7 +108,7 @@ def main():
                             host='localhost')
     cursor = conn.cursor()
     
-    teams = [ "Flamengo", "Palmeiras", "São Paulo", "Vasco"] 
+    teams = config['teams_reddit'].keys() 
     for team in teams:
         print(f"Buscando posts do {team}")
         team_id = insert_team(team, cursor, conn)
@@ -122,6 +119,7 @@ def main():
             if datetime.fromtimestamp(post.created_utc).year == 2023:
                 prefixos = ["[jogo] Campeonato Brasileiro:", "[pós-jogo] Campeonato Brasileiro:", "[Post-Match Thread] Campeonato Brasileiro:", "[Match Thread] Campeonato Brasileiro:"]
                 if any(post.title.startswith(prefixo) for prefixo in prefixos):
+                    print(f"Processando post {post.title}")
                     post_id = insert_post(team_id, post, cursor, conn)
                     insert_comments(post_id, post.comments, cursor, conn, classifier)
 
