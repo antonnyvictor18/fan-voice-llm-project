@@ -1,9 +1,7 @@
 import streamlit as st
-import pandas as pd
 import matplotlib.pyplot as plt
 from PIL import Image
-from torch import imag
-from utils.utils import graphics_generator, match_title_finder, summuarize_fan_voice, insert_data
+from utils.utils import graphics_generator, match_title_finder, summuarize_fan_voice
 from utils.config import config
 import os
 
@@ -36,10 +34,10 @@ if confirm_button:
     fig, ax = plt.subplots(1, 2, figsize=(24, 12))
     ax[0].imshow(image1)
     ax[0].axis('off')
-    ax[0].autoscale(enable=True, tight=True)  # Add this line to zoom in the image
+    ax[0].autoscale(enable=True, tight=True)
     ax[1].imshow(image2)
     ax[1].axis('off')
-    ax[1].autoscale(enable=True, tight=True)  # Add this line to zoom in the image
+    ax[1].autoscale(enable=True, tight=True) 
     os.remove(image_path1)
     os.remove(image_path2)
     st.pyplot(fig, clear_figure=True)
