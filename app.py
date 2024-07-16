@@ -44,4 +44,4 @@ if confirm_button:
 
     fan_voice = summuarize_fan_voice(time_selecionado, rodada_selecionada)
     st.subheader("Voz do Torcedor")
-    st.write(fan_voice['fan_voice_output'][0])
+    st.write(fan_voice['fan_voice_output'][0], font_size=25)

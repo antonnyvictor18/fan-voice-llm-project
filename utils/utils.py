@@ -81,7 +81,7 @@ def create_three_lines_chart(df, time, rodada, columns):
     xlabel='Rodada'
     ylabel='Qtd Comentários'
 
-    plt.figure(figsize=(8, 5))
+    plt.figure(figsize=(12, 8))
     
     df.index = range(1, len(df.index) + 1)
     for column in columns:
