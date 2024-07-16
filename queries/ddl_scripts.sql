@@ -23,3 +23,10 @@ CREATE TABLE Brasileirao2023.Comments (
     comment_sentiment VARCHAR(15) NOT NULL,
     reddit_comment_id VARCHAR(255) UNIQUE NOT NULL
 );
+
+CREATE TABLE Brasileirao2023.fan_voice (
+    fan_voice_id SERIAL PRIMARY KEY,
+    team_id INT REFERENCES Brasileirao2023.Teams(team_id),
+    post_round INT NOT NULL,	
+    fan_voice_output VARCHAR(5000) NOT NULL
+);
