@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-O "Fan Voice LLM Project" é um projeto que utiliza um modelo de linguagem para analisar comentários de fãs. Ele inclui scripts para extração, transformação e carregamento (ETL) de dados, bem como consultas SQL para análise de sentimento e outras métricas.
+O "Fan Voice LLM Project" é um projeto que utiliza um modelo de linguagem para analisar comentários de fãs. Ele inclui scripts para extração, transformação e carregamento (ETL) de dados, bem como consultas SQL para carregar os dados e fazer as análises de sentimento e opiniões dos torcedores do São Paulo, Flamengo, Palmeiras e Vasco.
 
 ## Estrutura do Projeto
 
@@ -27,7 +27,7 @@ fan-voice-llm-project/
 ## Arquivos e Diretórios Principais
 
 - **`.gitignore`**: Arquivo para especificar quais arquivos e diretórios devem ser ignorados pelo Git.
-- **`app.py`**: Script principal do projeto que provavelmente contém a lógica de execução.
+- **`app.py`**: Script principal do aplicativo streamlit.
 - **`README.md`**: Este arquivo de documentação.
 - **`requirements.txt`**: Arquivo com a lista de dependências do projeto.
 - **`queries/`**: Diretório contendo scripts SQL para diversas operações de banco de dados.
@@ -68,9 +68,15 @@ fan-voice-llm-project/
    pip install -r requirements.txt
    ```
 
-5. Configure as variáveis necessárias no arquivo `config.py` e configure suas crediciais em um arquivo `.env`.
+5. Configure o ambiente de banco de dados Postgres em sua máquina.
 
-6. Execute o script principal:
+6. Execute os script `ddl_scripts.sql`.
+
+7. Configure as variáveis de ambiente necessárias com suas crediciais em um arquivo `.env` dentro do venv.
+
+8. Execute o arquivo `etl_flow.py` para popular as tabelas do banco de dados.
+
+9. Execute o script principal:
    ```bash
    streamlit run app.py
    ```
